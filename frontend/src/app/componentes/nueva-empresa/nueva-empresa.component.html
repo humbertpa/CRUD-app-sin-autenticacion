@@ -1,21 +1,30 @@
-<div class="nueva-empresa">
-    <h1>Alta de empresa</h1>
-    <form (submit)="agregar()">
-        <label for="nombre">Nombre:</label><br>
-        <input id="nnombre" type="text" name="nombre" placeholder="nombre"><br>
-        <label for="constitucion">Fecha de constitución:</label><br>
-        <input id="nconstitucion" type="date" name="constitucion"><br>
-        <label for="tipo">Tipo de empresa:</label><br>
+<div class="nueva-empresa" id="nueva-empresa">
+    <h1 id="error-crear" style="display: none;">Error al crear empresa. Verifique conexion a internet</h1>
+    <h1 id="cexito" style="display: none;">Empresa creada exitosamente</h1>
+    <h1 id="ctitulo">Alta de empresa</h1>
+    <form id="cformulario">
+        <label for="nombre">* Nombre:</label><br>
+        <input id="nnombre" type="text" name="nombre" placeholder="nombre" maxlength=255 required><br>
+        <label for="constitucion">* Fecha de constitución:</label><br>
+        <input id="nconstitucion" type="date" name="constitucion" required><br>
+        <label for="tipo">* Tipo de empresa:</label><br>
 
-        <select id="ntipo" name="tipo">
+        <select id="ntipo" name="tipo" required>
+            <option value="Distribuidor">Distribuidor</option>
             <option value="Mayorista">Mayorista</option>
-            <option value="Minorista">Minorista</option>
+            <option value="Usuario final">Usuario final</option>
         </select>
         <br>
-        <label for="comentarios">Comentarios:</label><br>
+        <label for="comentarios" maxlength=1020>Comentarios:</label><br>
         <input id="ncomentarios" type="text" name="comentarios" placeholder="comentarios"><br>
-        <label for="favorita">Favorita?</label><br>
-        <input id="nfavorita" type="checkbox" name="favorita"><br>
-        <input type="submit" value="Guardar">
+        <div class="checkbox">
+            <label for="favorita">Favorita</label>
+            <input id="nfavorita" type="checkbox" name="favorita">
+        </div>
+
+        <div class="submit-button" id="csubmit-button">
+            <button (click)="agregar()">Guardar</button>
+        </div>
+
     </form>
 </div>

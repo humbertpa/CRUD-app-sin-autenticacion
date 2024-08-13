@@ -1,20 +1,34 @@
 <div class="editar-empresa">
-    <h1>Editar empresa</h1>
-    <form (submit)="editar()">
-        <label for="nombre">Nombre:</label><br>
-        <input id="nombre" type="text" name="nombre" value="nombre"><br>
-        <label for="constitucion">Fecha de constitución:</label><br>
-        <input id="constitucion" type="date" name="constitucion" value="fecha"><br>
-        <label for="tipo">Tipo de empresa</label><br>
-        <select id="tipo" name="tipo">
+    <h1 id="eexito" style="display: none ;">Empresa guardada exitosamente</h1>
+    <h1 id="error-guardar" style="display: none;">Error al guardar datos. Verifique conexion a internet</h1>
+    <h1 id="etitulo">Editar empresa</h1>
+
+    <form id="eformulario">
+        <label for="nombre">* Nombre:</label><br>
+        <input id="nombre" type="text" name="nombre" value="nombre" maxlength=255 required><br>
+        <label for="constitucion">* Fecha de constitución (dd/mm/aaaa):</label><br>
+        <input id="constitucion" type="date" name="constitucion" value="fecha" required><br>
+        <label for="tipo">* Tipo de empresa</label><br>
+        <select id="tipo" name="tipo" required>
+            <option value="Distribuidor">Distribuidor</option>
             <option value="Mayorista">Mayorista</option>
-            <option value="Minorista">Minorista</option>
+            <option value="Usuario final">Usuario final</option>
         </select>
         <br>
-        <label for="comentarios">Comentarios</label><br>
+        <label for="comentarios" maxlength=1020>Comentarios</label><br>
         <input id="comentarios" type="text" name="comentarios" value="comentarios"><br>
-        <label for="favorita">Favorita</label><br>
-        <input id="favorita" type="checkbox" name="favorita"><br>
-        <input type="submit" value="Guardar">
+
+
+        <div class="checkbox">
+            <label for="favorita">Favorita</label>
+            <input id="favorita" type="checkbox" name="favorita">
+        </div>
+
+
     </form>
+
+    <div class="submit-button" id="esubmit-button">
+        <button (click)="editar()">Guardar</button>
+    </div>
+
 </div>

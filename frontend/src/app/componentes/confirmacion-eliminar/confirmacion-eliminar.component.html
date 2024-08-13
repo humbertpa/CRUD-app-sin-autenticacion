@@ -1,4 +1,11 @@
 <div class="confirmar">
-    <h1>¿Estás seguro de que deseas eliminar esta empresa?</h1>
-    <button class="btn" (click)="eliminar()">Eliminar <i class="fa-solid fa-trash-can"></i></button>
+    <h1 id="error-eliminar" style="display: none;">Error al obtener datos. Verifique conexion a internet</h1>
+    <h1 id="pregunta">¿Estás seguro de que deseas eliminar esta empresa?</h1>
+    <h1 id="confirmacion" style="display: none;">Empresa eliminada exitosamente</h1>
+
+    <div class="botones" id="botones">
+        <button class="btn-can" (click)="cancelar()">Cancelar</button>
+        <button class="btn-del" (click)="eliminar()">Aceptar</button>
+    </div>
+
 </div>

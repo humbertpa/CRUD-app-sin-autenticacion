@@ -17,11 +17,26 @@ export class ConfirmacionEliminarComponent {
     /////////////Esto se debe eliminar y colocar en el boton de eliminar
     this.empresaService.eliminar(this.id_eliminar).subscribe(
       (response: any) => {
-        console.log("De regreso en empresas.component.ts");
-        //Estas lineas seccion para refrescar la pagina se obtuvo usando chatgpt
-        this.router.navigateByUrl('/empresas', { skipLocationChange: true }).then(() => {
-          this.router.navigate([this.router.url]);
-        });
+        const pregunta = document.getElementById("pregunta")
+        const confirmacion = document.getElementById("confirmacion")
+        const botones = document.getElementById("botones")
+        const error_eliminar = document.getElementById("error-eliminar")
+        if (response.status == 200) {
+          console.log("Se elimino la empresa");
+          if (pregunta) pregunta.style.display = "none";
+          if (botones) botones.style.display = "none";
+          if (confirmacion) confirmacion.style.display = "block";
+
+        } else {
+          if (pregunta) pregunta.style.display = "none";
+          if (botones) botones.style.display = "none";
+          if (error_eliminar) error_eliminar.style.display = "block";
+        }
+        ///////////////////////se uso chatgpt para el setTimeout para establecer un tiempo de espera durante
+        /////////////////////// el cual se vera el aviso de confirmacion de eliminacion exitosa
+        setTimeout(() => {
+          window.location.reload();
+        }, 2500);
       }, (error) => {
         console.error(error);
       }
@@ -29,6 +44,6 @@ export class ConfirmacionEliminarComponent {
   }
 
   cancelar() {
-
+    window.location.reload();
   }
 }

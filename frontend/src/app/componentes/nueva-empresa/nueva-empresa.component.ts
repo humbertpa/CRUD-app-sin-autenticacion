@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { EmpresaService } from 'src/app/servicios/empresa.service';
 
 @Component({
@@ -19,6 +19,7 @@ export class NuevaEmpresaComponent {
   constructor(
     private empresaService: EmpresaService) {
   }
+
   agregar() {
     this.nueva_empresa.tipo = (document.getElementById("ntipo") as HTMLInputElement).value;
     this.nueva_empresa.nombre = (document.getElementById("nnombre") as HTMLInputElement).value;
@@ -26,9 +27,29 @@ export class NuevaEmpresaComponent {
     this.nueva_empresa.comentarios = (document.getElementById("ncomentarios") as HTMLInputElement).value;
     this.nueva_empresa.constitucion = (document.getElementById("nconstitucion") as HTMLInputElement).value;
 
+    const titulo = document.getElementById("ctitulo")
+    const exito = document.getElementById("cexito")
+    const formulario = document.getElementById("cformulario")
+    const boton = document.getElementById("csubmit-button")
+    const error_crear = document.getElementById("error-crear")
+
     this.empresaService.agregar(this.nueva_empresa).subscribe(
       response => {
-        console.log('Empresa agregada:', response);
+        console.log(response)
+        if (response.status == 200) {
+          if (titulo) titulo.style.display = "none"
+          if (formulario) formulario.style.display = "none"
+          if (boton) boton.style.display = "none"
+          if (exito) exito.style.display = "block"
+        } else {
+          if (titulo) titulo.style.display = "none"
+          if (formulario) formulario.style.display = "none"
+          if (boton) boton.style.display = "none"
+          if (error_crear) error_crear.style.display = "block"
+        }
+        setTimeout(() => {
+          window.location.reload();
+        }, 2500);
       },
       error => {
         console.error('Error al agregar la empresa:', error);

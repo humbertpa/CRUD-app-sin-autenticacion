@@ -8,11 +8,7 @@ const port = 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(cors({
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-}));
+app.use(cors());
 
 
 app.listen(port, () => {
@@ -25,11 +21,15 @@ app.get('/consultar', (req, res) => {
     axios.get(url).
         then(response => {
             console.log(response.data)
-            res.send(response.data)
+            res.send({ status: 200, data: response.data });
         })
         .catch(error => {
-            console.log(error)
-            res.send("Error en la consulta")
+            if (error.code === 'ENOTFOUND') {
+                console.error('No se pudo conectar al servidor. Verifica tu conexión a Internet o la URL.');
+                res.send({ status: 503, mensage: 'No se pudo conectar al servidor. Verifica tu conexión a Internet o la URL.' });
+            } else {
+                console.error('Ocurrió un error:', error.message);
+            }
         })
 });
 
@@ -41,11 +41,11 @@ app.get('/consultar/:id', (req, res) => {
     axios.get(url).
         then(response => {
             console.log(response.data)
-            res.send(response.data)
+            res.send({ status: 200, data: response.data })
         })
         .catch(error => {
-            console.log(error)
-            res.send("Error en la consulta")
+            console.log("Error al obtener la empresa con id")
+            res.send({ status: 500, mensaje: "Error al obtener usuario" })
         })
 });
 
@@ -59,16 +59,16 @@ app.post('/alta', (req, res) => {
     })
         .then(response => {
             console.log(response.data);
-            res.send("Alta exitosa");
+            res.send({ status: 200, mensaje: "Alta exitosa" });
         })
         .catch(error => {
             console.log(error);
-            res.status(500).send("Error en la alta");
+            res.send({ status: 500, mensaje: "Error en la alta"});
         });
 });
 
 app.put('/editar', (req, res) => {
-    console.log(req.body);
+    console.log("Se entro a editar una empresas")
     const { id, ...datos } = req.body;
     console.log(id, datos);
 
@@ -81,11 +81,11 @@ app.put('/editar', (req, res) => {
     })
         .then(response => {
             console.log(response.data);
-            res.send('Empresa editada exitosamente');
+            res.send({ status: 200, mensaje: "Empresa editada exitosamente" });
         })
         .catch(error => {
             console.log(error);
-            res.status(500).send("Error en la edición");
+            res.send({ status: 500, mensaje: "Error en la edición" });
         });
 });
 
@@ -97,10 +97,11 @@ app.delete('/baja/:id', (req, res) => {
     axios.delete(url).
         then(response => {
             console.log(response.status)
-            res.send('Empresa eliminada exitosamente')
+            res.send({ status: 200, mensaje: 'Empresa eliminada exitosamente' });
         })
-        .catch(error =>
+        .catch(error => {
             console.log(error)
-        )
+            res.send({ status: 500, mensaje: 'Error al eliminar empresa' })
+        })
 });
 

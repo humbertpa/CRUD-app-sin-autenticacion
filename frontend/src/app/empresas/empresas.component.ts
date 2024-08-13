@@ -18,17 +18,27 @@ export class EmpresasComponent implements OnInit {
 
   ngOnInit(): void {
 
+    const sin_empresas = document.getElementById("vacio")
+    const con_empresas = document.getElementById("lista-empresas")
+    const no_conectado = document.getElementById("no-conectado")
+
     this.empresaService.consultar().subscribe(
       (response: any) => {
-        console.log("De regreso en empresas.component.ts");
-        this.empresas = response;
-        this.empresas = this.empresas.sort((a, b) => a.name.localeCompare(b.name));
-        if (this.empresas.length == 0) {
-          const sin_empresas = document.getElementById("vacio")
-          const con_empresas = document.getElementById("lista-empresas")
-          if (sin_empresas) sin_empresas.style.display = "block"
+        this.empresas = response.data;
+        if (response.status == 200) {
+          this.empresas = this.empresas.sort((a, b) => a.nombre.localeCompare(b.nombre));
+          if (this.empresas.length == 0) {
+            if (sin_empresas) sin_empresas.style.display = "block"
+            if (con_empresas) con_empresas.style.display = "none"
+          } else {
+            if (con_empresas) con_empresas.style.display = "block"
+          }
+        } else {
+          if (sin_empresas) sin_empresas.style.display = "none"
           if (con_empresas) con_empresas.style.display = "none"
+          if (no_conectado) no_conectado.style.display = "block"
         }
+
       }, (error) => {
         console.error(error);
       }
@@ -91,22 +101,27 @@ export class EmpresasComponent implements OnInit {
     return new Promise((resolve, reject) => {
       this.empresaService.consultar_id(this.id_editar).subscribe(
         (response: any) => {
-          this.empresa_editable = response;
-          document.getElementById("nombre")?.setAttribute("value", response.nombre);
-          document.getElementById("constitucion")?.setAttribute("value", response.constitucion);
-          document.getElementById("tipo")?.setAttribute("value", response.tipo);
-          document.getElementById("comentarios")?.setAttribute("value", response.comentarios);
+          console.log('respuesta', response)
+          if (response.status == 200) {
+            this.empresa_editable = response.data;
+            console.log(this.empresa_editable)
+            document.getElementById("nombre")?.setAttribute("value", response.data.nombre);
+            document.getElementById("constitucion")?.setAttribute("value", response.data.constitucion);
+            document.getElementById("tipo")?.setAttribute("value", response.data.tipo);
+            document.getElementById("comentarios")?.setAttribute("value", response.data.comentarios);
 
-          const favoritaCheckbox = document.getElementById("favorita") as HTMLInputElement | null;
-          if (favoritaCheckbox) {
-            favoritaCheckbox.checked = response.favorita === true;
+            const favoritaCheckbox = document.getElementById("favorita") as HTMLInputElement | null;
+            if (favoritaCheckbox) {
+              favoritaCheckbox.checked = response.data.favorita === true;
+            }
+          } else {
+            console.log(response.mensaje)
           }
-
-          resolve();  // Resuelve la promesa después de completar
+          resolve();
         },
         (error) => {
-          console.error(error);
-          reject(error);  // Rechaza la promesa en caso de error
+          console.error("hubo un error", error);
+          reject(error);
         }
       );
     });

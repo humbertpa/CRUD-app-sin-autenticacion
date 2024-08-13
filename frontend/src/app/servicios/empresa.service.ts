@@ -22,13 +22,18 @@ export class EmpresaService {
     });
   }
 
-  editar(empresa: any): Observable<any> {
+/*   editar(empresa: any): Observable<any> {
     console.log("=========================Entro a agregar en empresa.service");
     return this.httpClient.put('http://localhost:3000/editar', empresa, {
       headers: {
         'Content-Type': 'application/json'
       }
     });
+  }
+ */
+  editar(empresa: any): Observable<any> {
+    console.log("=========================Entro a agregar en empresa.service");
+    return this.httpClient.put('http://localhost:3000/editar', empresa);
   }
 
 
