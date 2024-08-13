@@ -23,6 +23,12 @@ export class EditarEmpresaComponent {
   constructor(private empresaService: EmpresaService) {
   }
 
+  validar() {
+    return ((document.getElementById("tipo") as HTMLInputElement).value != ''
+      && (document.getElementById("nombre") as HTMLInputElement).value != ''
+      && (document.getElementById("constitucion") as HTMLInputElement).value != '')
+  }
+
   editar() {
 
     console.log(`editar empresa \n el id de la empresa es ${this.id_editar}`)
@@ -38,32 +44,37 @@ export class EditarEmpresaComponent {
     const formulario = document.getElementById("eformulario")
     const boton = document.getElementById("esubmit-button")
     const error_guardar = document.getElementById("error-guardar")
+    console.log(this.validar())
+    if (this.validar()) {
+      this.empresaService.editar(this.empresa_editable).subscribe(
+        response => {
+          console.log(response)
+          if (response.status == 200) {
+            console.log(response.mensaje);
+            if (exito) exito.style.display = "block";
+            if (titulo) titulo.style.display = "none";
+            if (formulario) formulario.style.display = "none";
+            if (boton) boton.style.display = "none";
+          } else {
+            if (titulo) titulo.style.display = "none";
+            if (formulario) formulario.style.display = "none";
+            if (boton) boton.style.display = "none";
+            if (error_guardar) error_guardar.style.display = "block"
+          }
 
-    this.empresaService.editar(this.empresa_editable).subscribe(
-      response => {
-        console.log(response)
-        if (response.status == 200) {
-          console.log(response.mensaje);
-          if (exito) exito.style.display = "block";
-          if (titulo) titulo.style.display = "none";
-          if (formulario) formulario.style.display = "none";
-          if (boton) boton.style.display = "none";
-        } else {
-          if (titulo) titulo.style.display = "none";
-          if (formulario) formulario.style.display = "none";
-          if (boton) boton.style.display = "none";
-          if (error_guardar) error_guardar.style.display = "block"
+          ///////////////////////se uso chatgpt para el setTimeout para establecer un tiempo de espera durante
+          /////////////////////// el cual se vera el aviso de confirmacion de eliminacion exitosa
+          setTimeout(() => {
+            window.location.reload();
+          }, 2500);
+        },
+        error => {
+          console.error('Error al editar la empresa:', error);
         }
-
-        ///////////////////////se uso chatgpt para el setTimeout para establecer un tiempo de espera durante
-        /////////////////////// el cual se vera el aviso de confirmacion de eliminacion exitosa
-        setTimeout(() => {
-          window.location.reload();
-        }, 2500);
-      },
-      error => {
-        console.error('Error al editar la empresa:', error);
-      }
-    );
+      );
+    } else {
+      alert("Por favor rellene los campos marcados con (*)")
+      return
+    }
   }
 }

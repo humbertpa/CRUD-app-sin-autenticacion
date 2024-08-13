@@ -12,6 +12,7 @@ export class EmpresasComponent implements OnInit {
   empresa_editable = {}
   id_eliminar: string = '';
   id_editar: string = '';
+  error_editar: boolean = false;
 
   constructor(private empresaService: EmpresaService) {
   }
@@ -88,8 +89,14 @@ export class EmpresasComponent implements OnInit {
     if (accion == 'eliminar')
       this.id_eliminar = id;
 
-    let modal_visible = document.getElementById(visible)
-    if (modal_visible) modal_visible.style.display = 'block'
+    if (!this.error_editar) {
+      let modal_visible = document.getElementById(visible)
+      if (modal_visible) modal_visible.style.display = 'block'
+    } else {
+      const err = document.getElementById("error-editar")
+      if (err) err.style.display = "block"
+    }
+
 
     const modal = document.getElementById("modal") as HTMLElement
     if (modal) modal.style.display = 'block'
@@ -116,6 +123,7 @@ export class EmpresasComponent implements OnInit {
             }
           } else {
             console.log(response.mensaje)
+            this.error_editar = true
           }
           resolve();
         },

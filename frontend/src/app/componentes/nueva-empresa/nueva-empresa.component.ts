@@ -20,7 +20,14 @@ export class NuevaEmpresaComponent {
     private empresaService: EmpresaService) {
   }
 
+  validar() {
+    return ((document.getElementById("ntipo") as HTMLInputElement).value != ''
+      && (document.getElementById("nnombre") as HTMLInputElement).value != ''
+      && (document.getElementById("nconstitucion") as HTMLInputElement).value != '')
+  }
+
   agregar() {
+
     this.nueva_empresa.tipo = (document.getElementById("ntipo") as HTMLInputElement).value;
     this.nueva_empresa.nombre = (document.getElementById("nnombre") as HTMLInputElement).value;
     this.nueva_empresa.favorita = (document.getElementById("nfavorita") as HTMLInputElement).checked;
@@ -33,27 +40,34 @@ export class NuevaEmpresaComponent {
     const boton = document.getElementById("csubmit-button")
     const error_crear = document.getElementById("error-crear")
 
-    this.empresaService.agregar(this.nueva_empresa).subscribe(
-      response => {
-        console.log(response)
-        if (response.status == 200) {
-          if (titulo) titulo.style.display = "none"
-          if (formulario) formulario.style.display = "none"
-          if (boton) boton.style.display = "none"
-          if (exito) exito.style.display = "block"
-        } else {
-          if (titulo) titulo.style.display = "none"
-          if (formulario) formulario.style.display = "none"
-          if (boton) boton.style.display = "none"
-          if (error_crear) error_crear.style.display = "block"
+    console.log(this.validar())
+    if (this.validar()) {
+      this.empresaService.agregar(this.nueva_empresa).subscribe(
+        response => {
+          console.log(response)
+          if (response.status == 200) {
+            console.log(titulo, formulario, boton, exito)
+            if (titulo) titulo.style.display = "none"
+            if (formulario) formulario.style.display = "none"
+            if (boton) boton.style.display = "none"
+            if (exito) exito.style.display = "block"
+          } else {
+            if (titulo) titulo.style.display = "none"
+            if (formulario) formulario.style.display = "none"
+            if (boton) boton.style.display = "none"
+            if (error_crear) error_crear.style.display = "block"
+          }
+          setTimeout(() => {
+            window.location.reload();
+          }, 2500);
+        },
+        error => {
+          console.error('Error al agregar la empresa:', error);
         }
-        setTimeout(() => {
-          window.location.reload();
-        }, 2500);
-      },
-      error => {
-        console.error('Error al agregar la empresa:', error);
-      }
-    );
+      );
+    } else {
+      alert("Por favor rellene los campos marcados con (*)")
+      return
+    }
   }
 }
