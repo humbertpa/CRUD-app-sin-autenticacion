@@ -21,12 +21,17 @@ export class FormularioComponent implements OnChanges {
     comentarios: '',
     constitucion: ''
   }
+  mensaje: string = ''
+  esVisible: boolean = true
+  titulo:string = ''
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['id_editar'] && !changes['id_editar'].isFirstChange()) {
       if (this.id_editar === "-1") {
+        this.titulo = 'Alta de empresa'
         this.reset();
       } else {
+        this.titulo = 'Editar empresa'
         this.consulta();
       }
     }
@@ -43,10 +48,12 @@ export class FormularioComponent implements OnChanges {
     const { id, ...nuevaEmpresa } = this.empresa
 
     const titulo = document.getElementById("titulo")
-    const exito = document.getElementById("exito")
     const formulario = document.getElementById("formulario")
     const boton = document.getElementById("submit-button")
+
+    const exito = document.getElementById("exito")
     const error = document.getElementById("error")
+
 
     console.log(this.validar())
 
@@ -63,6 +70,9 @@ export class FormularioComponent implements OnChanges {
 
             if (exito) {
               exito.innerHTML = "Empresa creada exitosamente"
+              if (titulo) titulo.style.display = "none";
+              if (formulario) formulario.style.display = "none";
+              if (boton) boton.style.display = "none";
               exito.style.display = "block"
             }
 
@@ -91,37 +101,16 @@ export class FormularioComponent implements OnChanges {
 
   editar() {
 
-    const titulo = document.getElementById("titulo")
-    const exito = document.getElementById("exito")
-    const formulario = document.getElementById("formulario")
-    const boton = document.getElementById("submit-button")
-    const error = document.getElementById("error")
-
-
     console.log(this.validar())
     if (this.validar()) {
       this.empresaService.editar(this.empresa).subscribe(
         response => {
           console.log(response)
-          if (titulo) titulo.style.display = "none";
-          if (formulario) formulario.style.display = "none";
-          if (boton) boton.style.display = "none";
 
-          if (response.status == 200) {
+          this.mensaje = response.status == 200 ? "Empresa editada exitosamente" : "Error al editar empresa";
 
-            if (exito) {
-              exito.innerHTML = "Empresa editada exitosamente"
-              exito.style.display = "block";
-            }
-          } else {
-            if (error) {
-              error.innerHTML = "Error al editar empresa"
-              error.style.display = "block"
-            }
-          }
+          this.esVisible = !this.esVisible
 
-          ///////////////////////se uso chatgpt para el setTimeout para establecer un tiempo de espera durante
-          /////////////////////// el cual se vera el aviso de confirmacion de eliminacion exitosa
           setTimeout(() => {
             window.location.reload();
           }, 2500);

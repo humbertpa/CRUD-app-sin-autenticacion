@@ -20,6 +20,7 @@ export class EmpresasComponent implements OnInit {
   id_eliminar: string = '';
   id_editar: string = '';
   error_editar: boolean = false;
+  esVisible: boolean = true
 
   constructor(private empresaService: EmpresaService) {
   }
@@ -72,34 +73,15 @@ export class EmpresasComponent implements OnInit {
 
   async mostrar_modal(accion: string, id: string) {
 
-    const elementos = {
-      "formulario": "modal-formulario",
-      "eliminar": "modal-confirmacion"
-    }
-
-    const oculto = (accion == "formulario") ? "modal-formulario" : "modal-confirmacion";
-    const visible = elementos[accion as keyof typeof elementos];
-
-    const modal_oculto = document.getElementById(oculto)
-    const modal_visible = document.getElementById(visible)
-
-    const titulo = document.getElementById("titulo")
-
     if (accion == 'formulario') {
       this.id_editar = id
-      if (id != "-1") {
-        if (titulo) titulo.innerHTML = "Editar empresa"
-      } else {
-        if (titulo) titulo.innerHTML = "Alta de empresa"
-      }
+      this.esVisible = true
     }
 
-    if (accion == 'eliminar')
+    if (accion == 'eliminar') {
       this.id_eliminar = id;
-
-    if (modal_oculto) modal_oculto.style.display = 'none'
-
-    if (modal_visible) modal_visible.style.display = 'block'
+      this.esVisible = false
+    }
 
     const modal = document.getElementById("modal") as HTMLElement
     if (modal) modal.style.display = 'block'

@@ -8,8 +8,8 @@
 
     <div id="modal" class="modal">
         <div class="modal-content">
-            <app-formulario [id_editar]="id_editar" id="modal-formulario" style="display: none;"></app-formulario>
-            <app-confirmacion-eliminar [id_eliminar]="id_eliminar" id="modal-confirmacion" style="display: none;"></app-confirmacion-eliminar>
+            <app-formulario [id_editar]="id_editar" id="modal-formulario" *ngIf ="esVisible"></app-formulario>
+            <app-confirmacion-eliminar [id_eliminar]="id_eliminar" id="modal-confirmacion" *ngIf ="!esVisible"></app-confirmacion-eliminar>
         </div>
     </div>
 

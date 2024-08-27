@@ -1,9 +1,8 @@
 <div class="contenedor-formulario" id="contenedor-formulario">
-    <h1 id="error" style="display: none"></h1>
-    <h1 id="exito" style="display: none"></h1>
-    <h1 id="titulo"></h1>
+    <h1 *ngIf="!esVisible">{{mensaje}}</h1>
+    <h1 *ngIf="esVisible" id="titulo">{{titulo}}</h1>
 
-    <form id="formulario">
+    <form *ngIf="esVisible" id="formulario">
         <label for="nombre">* Nombre:</label><br />
         <input id="nombre" type="text" name="nombre" placeholder="nombre" [(ngModel)]="empresa.nombre" maxlength="255"
             required /><br />
@@ -25,7 +24,7 @@
             <input id="favorita" type="checkbox" name="favorita" [(ngModel)]="empresa.favorita" />
         </div>
     </form>
-    <div class="submit-button" id="submit-button">
+    <div *ngIf="esVisible" class="submit-button" id="submit-button">
         <button (click)="guardar()">Guardar</button>
     </div>
 </div>
