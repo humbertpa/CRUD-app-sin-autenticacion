@@ -9,7 +9,14 @@ import { EmpresaService } from '../servicios/empresa.service';
 export class EmpresasComponent implements OnInit {
 
   empresas: any[] = []
-  empresa_editable = {}
+  empresa = {
+    "id": '',
+    "tipo": '',
+    "nombre": '',
+    "favorita": false,
+    "comentarios": '',
+    "constitucion": ''
+  }
   id_eliminar: string = '';
   id_editar: string = '';
   error_editar: boolean = false;
@@ -66,72 +73,35 @@ export class EmpresasComponent implements OnInit {
   async mostrar_modal(accion: string, id: string) {
 
     const elementos = {
-      "nuevo": "modal-nuevo",
-      "editar": "modal-editar",
+      "formulario": "modal-formulario",
       "eliminar": "modal-confirmacion"
     }
 
-    const ocultos = ['nuevo', 'editar', 'eliminar'].filter(val => val != accion)
+    const oculto = (accion == "formulario") ? "modal-formulario" : "modal-confirmacion";
+    const visible = elementos[accion as keyof typeof elementos];
 
-    for (let acc of ocultos) {
-      let modal = elementos[acc as keyof typeof elementos]; // linea obtenida de chatgpt para acceder a atributo de objeto con llave
-      if (document.getElementById(modal)) (document.getElementById(modal) as HTMLElement).style.display = 'none'
+    const modal_oculto = document.getElementById(oculto)
+    const modal_visible = document.getElementById(visible)
 
-    }
+    const titulo = document.getElementById("titulo")
 
-    let visible = elementos[accion as keyof typeof elementos];
-
-
-    if (accion == 'editar') {
+    if (accion == 'formulario') {
       this.id_editar = id
-      await this.consulta()
+      if (id != "-1") {
+        if (titulo) titulo.innerHTML = "Editar empresa"
+      } else {
+        if (titulo) titulo.innerHTML = "Alta de empresa"
+      }
     }
+
     if (accion == 'eliminar')
       this.id_eliminar = id;
 
-    if (!this.error_editar) {
-      let modal_visible = document.getElementById(visible)
-      if (modal_visible) modal_visible.style.display = 'block'
-    } else {
-      const err = document.getElementById("error-editar")
-      if (err) err.style.display = "block"
-    }
+    if (modal_oculto) modal_oculto.style.display = 'none'
 
+    if (modal_visible) modal_visible.style.display = 'block'
 
     const modal = document.getElementById("modal") as HTMLElement
     if (modal) modal.style.display = 'block'
-
-  }
-
-  consulta(): Promise<void> {
-
-    return new Promise((resolve, reject) => {
-      this.empresaService.consultar_id(this.id_editar).subscribe(
-        (response: any) => {
-          console.log('respuesta', response)
-          if (response.status == 200) {
-            this.empresa_editable = response.data;
-            console.log(this.empresa_editable)
-            document.getElementById("nombre")?.setAttribute("value", response.data.nombre);
-            document.getElementById("constitucion")?.setAttribute("value", response.data.constitucion);
-            document.getElementById("tipo")?.setAttribute("value", response.data.tipo);
-            document.getElementById("comentarios")?.setAttribute("value", response.data.comentarios);
-
-            const favoritaCheckbox = document.getElementById("favorita") as HTMLInputElement | null;
-            if (favoritaCheckbox) {
-              favoritaCheckbox.checked = response.data.favorita === true;
-            }
-          } else {
-            console.log(response.mensaje)
-            this.error_editar = true
-          }
-          resolve();
-        },
-        (error) => {
-          console.error("hubo un error", error);
-          reject(error);
-        }
-      );
-    });
   }
 }
