@@ -23,10 +23,11 @@ export class FormularioComponent implements OnChanges {
   }
   mensaje: string = ''
   esVisible: boolean = true
-  titulo:string = ''
+  titulo: string = ''
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['id_editar'] && !changes['id_editar'].isFirstChange()) {
+    if (changes['id_editar']) {
+      this.esVisible = true
       if (this.id_editar === "-1") {
         this.titulo = 'Alta de empresa'
         this.reset();
@@ -37,7 +38,6 @@ export class FormularioComponent implements OnChanges {
     }
   }
 
-
   guardar() {
     this.empresa.id = this.id_editar
     this.id_editar == "-1" ? this.agregar() : this.editar();
@@ -47,43 +47,16 @@ export class FormularioComponent implements OnChanges {
 
     const { id, ...nuevaEmpresa } = this.empresa
 
-    const titulo = document.getElementById("titulo")
-    const formulario = document.getElementById("formulario")
-    const boton = document.getElementById("submit-button")
-
-    const exito = document.getElementById("exito")
-    const error = document.getElementById("error")
-
-
-    console.log(this.validar())
-
     if (this.validar()) {
       this.empresaService.agregar(nuevaEmpresa).subscribe(
         response => {
           console.log(response)
 
-          if (titulo) titulo.style.display = "none"
-          if (formulario) formulario.style.display = "none"
-          if (boton) boton.style.display = "none"
+          this.mensaje = response.status == 200 ? "Empresa creada exitosamente" : "Error al crear empresa";
 
-          if (response.status == 200) {
-
-            if (exito) {
-              exito.innerHTML = "Empresa creada exitosamente"
-              if (titulo) titulo.style.display = "none";
-              if (formulario) formulario.style.display = "none";
-              if (boton) boton.style.display = "none";
-              exito.style.display = "block"
-            }
-
-            this.reset()
-
-          } else {
-            if (error) {
-              error.innerHTML = "Error al editar empresa"
-              error.style.display = "block"
-            }
-          }
+          this.esVisible = !this.esVisible
+          
+          this.reset()
 
           setTimeout(() => {
             window.location.reload();
@@ -101,7 +74,6 @@ export class FormularioComponent implements OnChanges {
 
   editar() {
 
-    console.log(this.validar())
     if (this.validar()) {
       this.empresaService.editar(this.empresa).subscribe(
         response => {
